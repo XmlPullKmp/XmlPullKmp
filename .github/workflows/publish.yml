@@ -18,7 +18,6 @@ jobs:
         env:
           PRIVATE_GPG_KEY: ${{ secrets.PRIVATE_GPG_KEY }}
         run: |
-          brew install gpg
           echo "PRIVATE_GPG_KEY" | gpg --dearmor > ${HOME}/secring.gpg
 
       - name: Setup Gradle
