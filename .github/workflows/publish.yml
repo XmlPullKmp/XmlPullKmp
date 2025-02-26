@@ -18,7 +18,7 @@ jobs:
         env:
           PRIVATE_GPG_KEY: ${{ secrets.PRIVATE_GPG_KEY }}
         run: |
-          echo "PRIVATE_GPG_KEY" | gpg --dearmor > ${HOME}/secring.gpg
+          echo "$PRIVATE_GPG_KEY" | gpg --dearmor > ${HOME}/secring.gpg
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -32,9 +32,8 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          SIGNING_KEY: ${{ secrets.PRIVATE_GPG_KEY }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.PRIVATE_GPG_KEY_PASSWORD }}
+          PRIVATE_GPG_KEY: ${{ secrets.PRIVATE_GPG_KEY }}
+          PRIVATE_GPG_KEY_PASSWORD: ${{ secrets.PRIVATE_GPG_KEY_PASSWORD }}
         run: |
           chmod 777 ./gradlew
-          ./gradlew soundfont:publishAndReleaseToMavenCentral --no-configuration-cache
-          ./gradlew midi:publishAndReleaseToMavenCentral --no-configuration-cache
+          ./gradlew library:publishAndReleaseToMavenCentral --no-configuration-cache
