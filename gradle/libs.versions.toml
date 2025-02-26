@@ -1,0 +1,25 @@
+[versions]
+kotlin = "2.1.10"
+fleeksoft-io = "0.0.3"
+test-resources = "0.10.0"
+
+agp = "8.5.0"
+android-minSdk = "24"
+android-compileSdk = "34"
+
+junit = "5.11.4"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+fleeksoft-io-core = { module = "com.fleeksoft.io:io-core", version.ref = "fleeksoft-io" }
+fleeksoft-io-io = { module = "com.fleeksoft.io:io", version.ref = "fleeksoft-io" }
+fleeksoft-io-charset-ext = { module = "com.fleeksoft.charset:charset-ext", version.ref = "fleeksoft-io" }
+test-resources = { module = "com.goncalossilva:resources", version.ref = "test-resources" }
+junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
+
+[plugins]
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }
+test-resources-plugin = { id = "com.goncalossilva.resources", version.ref = "test-resources" }
