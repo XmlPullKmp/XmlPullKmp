@@ -6,6 +6,7 @@ test-resources = "0.10.0"
 agp = "8.5.0"
 android-minSdk = "24"
 android-compileSdk = "34"
+maven-publish = "0.30.0"
 
 junit = "5.11.4"
 
@@ -21,5 +22,5 @@ junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref 
 [plugins]
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
-vanniktech-mavenPublish = { id = "com.vanniktech.maven.publish", version = "0.29.0" }
 test-resources-plugin = { id = "com.goncalossilva.resources", version.ref = "test-resources" }
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
