@@ -52,7 +52,7 @@ interface XmlPullParser {
     fun getProperty(name: String): Any?
 
     @Throws(XmlPullParserException::class)
-    fun setInput(`in`: Reader)
+    fun setInput(input: Reader)
 
     @Throws(XmlPullParserException::class)
     fun setInput(inputStream: InputStream, inputEncoding: String?)
