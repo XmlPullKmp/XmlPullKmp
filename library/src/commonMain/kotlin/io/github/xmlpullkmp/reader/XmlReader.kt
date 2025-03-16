@@ -7,7 +7,11 @@ import io.github.xmlpullkmp.exceptions.XmlStreamReaderException
 import kotlin.jvm.JvmOverloads
 
 @Deprecated("use XmlStreamReader")
-open class XmlReader : Reader {
+open class XmlReader// doLenientDetection(null, ex)
+@JvmOverloads constructor(
+    inputStream: InputStream,
+    lenient: Boolean = true
+) : Reader() {
     private var _reader: Reader? = null
 
     var encoding: String? = null
@@ -15,8 +19,7 @@ open class XmlReader : Reader {
 
     private var _defaultEncoding: String? = null
 
-    @JvmOverloads
-    constructor(inputStream: InputStream, lenient: Boolean = true) {
+    init {
         _defaultEncoding = defaultEncoding
         try {
             doRawStream(inputStream, lenient)

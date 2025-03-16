@@ -26,8 +26,6 @@ class XmlPullParserKmp : XmlPullParser {
 
     private fun newString(cbuf: CharArray, off: Int, len: Int): String = cbuf.concatToString(off, off + len)
 
-    private fun newStringIntern(cbuf: CharArray, off: Int, len: Int): String = cbuf.concatToString(off, off + len)
-
     private var processNamespaces = false
 
     private var roundtripSupported = false
@@ -36,15 +34,11 @@ class XmlPullParserKmp : XmlPullParser {
 
     private var lineNumber: Int = 0
 
-    override fun getLineNumber(): Int {
-        return lineNumber
-    }
+    override fun getLineNumber(): Int = lineNumber
 
     private var columnNumber: Int = 0
 
-    override fun getColumnNumber(): Int {
-        return columnNumber
-    }
+    override fun getColumnNumber() = columnNumber
 
     private var seenRoot = false
 
@@ -60,9 +54,7 @@ class XmlPullParserKmp : XmlPullParser {
 
     private var depth: Int = 0
 
-    override fun getDepth(): Int {
-        return depth
-    }
+    override fun getDepth(): Int = depth
 
     private var elRawName: Array<CharArray?> = arrayOf()
 
@@ -435,7 +427,7 @@ class XmlPullParserKmp : XmlPullParser {
         ensureEntityCapacity()
 
         val entityNameCharData = entityName.toCharArray()
-        this.entityName[entityEnd] = newString(entityNameCharData, 0, entityName.length)
+        this.entityName[entityEnd] = this.newString(entityNameCharData, 0, entityName.length)
         entityNameBuf[entityEnd] = entityNameCharData
 
         entityReplacement[entityEnd] = replacement
@@ -578,7 +570,7 @@ class XmlPullParserKmp : XmlPullParser {
     override fun getName(): String? = when (eventType) {
         XmlPullParser.START_TAG  -> elName[depth]
         XmlPullParser.END_TAG    -> elName[depth]
-        XmlPullParser.ENTITY_REF -> entityRefName ?: newString(buf, posStart, posEnd - posStart).also { entityRefName = it }
+        XmlPullParser.ENTITY_REF -> entityRefName ?: this.newString(buf, posStart, posEnd - posStart).also { entityRefName = it }
         else                     -> null
     }
 
@@ -886,7 +878,7 @@ class XmlPullParserKmp : XmlPullParser {
                     if (tokenize) return XmlPullParser.ENTITY_REF.also { eventType = it }
                     if (resolvedEntityRefCharBuf.contentEquals(BUF_NOT_RESOLVED)) {
                         if (entityRefName == null) {
-                            entityRefName = newString(buf, posStart, posEnd - posStart)
+                            entityRefName = this.newString(buf, posStart, posEnd - posStart)
                         }
                         throw XmlPullParserException(
                             "could not resolve entity named '" + printable(entityRefName) + "'", this, null
@@ -1319,19 +1311,19 @@ class XmlPullParserKmp : XmlPullParser {
         var prefix: String? = null
         if (processNamespaces) {
             if (colonPos != -1) {
-                elPrefix[depth] = newString(buf, nameStart - bufAbsoluteStart, colonPos - nameStart)
+                elPrefix[depth] = this.newString(buf, nameStart - bufAbsoluteStart, colonPos - nameStart)
                 prefix = elPrefix[depth]
-                elName[depth] = newString(
+                elName[depth] = this.newString(
                     buf,
                     colonPos + 1 - bufAbsoluteStart, pos - 2 - (colonPos - bufAbsoluteStart)
                 )
             } else {
                 elPrefix[depth] = null
                 prefix = elPrefix[depth]
-                elName[depth] = newString(buf, nameStart - bufAbsoluteStart, elLen)
+                elName[depth] = this.newString(buf, nameStart - bufAbsoluteStart, elLen)
             }
         } else {
-            elName[depth] = newString(buf, nameStart - bufAbsoluteStart, elLen)
+            elName[depth] = this.newString(buf, nameStart - bufAbsoluteStart, elLen)
         }
 
         while (true) {
@@ -1483,15 +1475,15 @@ class XmlPullParserKmp : XmlPullParser {
                             null
                         )
                     }
-                    name = newString(buf, colonPos - bufAbsoluteStart + 1, nameLen)
+                    name = this.newString(buf, colonPos - bufAbsoluteStart + 1, nameLen)
                 }
             } else {
                 if (colonPos != -1) {
                     val prefixLen = colonPos - nameStart
-                    attributePrefix[attributeCount] = newString(buf, nameStart - bufAbsoluteStart, prefixLen)
+                    attributePrefix[attributeCount] = this.newString(buf, nameStart - bufAbsoluteStart, prefixLen)
                     prefix = attributePrefix[attributeCount]
                     val nameLen = pos - 2 - (colonPos - bufAbsoluteStart)
-                    attributeName[attributeCount] = newString(buf, colonPos - bufAbsoluteStart + 1, nameLen)
+                    attributeName[attributeCount] = this.newString(buf, colonPos - bufAbsoluteStart + 1, nameLen)
                     name = attributeName[attributeCount]
 
 
@@ -1499,7 +1491,7 @@ class XmlPullParserKmp : XmlPullParser {
                     attributePrefix[attributeCount] = null
                     prefix = attributePrefix[attributeCount]
                     attributeName[attributeCount] =
-                        newString(buf, nameStart - bufAbsoluteStart, pos - 1 - (nameStart - bufAbsoluteStart))
+                        this.newString(buf, nameStart - bufAbsoluteStart, pos - 1 - (nameStart - bufAbsoluteStart))
                     name = attributeName[attributeCount]
                 }
                 if (!allStringsInterned) {
@@ -1508,7 +1500,7 @@ class XmlPullParserKmp : XmlPullParser {
             }
         } else {
             attributeName[attributeCount] =
-                newString(buf, nameStart - bufAbsoluteStart, pos - 1 - (nameStart - bufAbsoluteStart))
+                this.newString(buf, nameStart - bufAbsoluteStart, pos - 1 - (nameStart - bufAbsoluteStart))
             name = attributeName[attributeCount]
             if (!allStringsInterned) {
                 attributeNameHash[attributeCount] = name.hashCode()
@@ -1570,9 +1562,9 @@ class XmlPullParserKmp : XmlPullParser {
 
         if (processNamespaces && startsWithXmlns) {
             val ns: String = if (!usePC) {
-                newStringIntern(buf, posStart, pos - 1 - posStart)
+                this.newString(buf, posStart, pos - 1 - posStart)
             } else {
-                newStringIntern(pc, pcStart, pcEnd - pcStart)
+                this.newString(pc, pcStart, pcEnd - pcStart)
             }
             ensureNamespacesCapacity(namespaceEnd)
             var prefixHash = -1
@@ -1709,7 +1701,7 @@ class XmlPullParserKmp : XmlPullParser {
             }
 
             if (tokenize) {
-                text = newString(resolvedEntityRefCharBuf, 0, resolvedEntityRefCharBuf.size)
+                text = this.newString(resolvedEntityRefCharBuf, 0, resolvedEntityRefCharBuf.size)
             }
             len = resolvedEntityRefCharBuf.size
         } else {
@@ -1805,7 +1797,7 @@ class XmlPullParserKmp : XmlPullParser {
                 }
             }
         } else {
-            entityRefName = newString(buf, posStart, posEnd - posStart)
+            entityRefName = this.newString(buf, posStart, posEnd - posStart)
             for (i in entityEnd - 1 downTo 0) {
                 if (entityRefName === entityName[i]) {
                     if (tokenize) text = entityReplacement[i]
@@ -1998,7 +1990,7 @@ class XmlPullParserKmp : XmlPullParser {
                                 if (tokenize) posEnd = pos - 2
                                 val off = piTargetStart + 3
                                 val len = pos - 2 - off
-                                xmlDeclContent = newString(buf, off, len)
+                                xmlDeclContent = this.newString(buf, off, len)
                                 return
                             }
                         }
@@ -2120,7 +2112,7 @@ class XmlPullParserKmp : XmlPullParser {
                 null
             )
         }
-        xmlDeclVersion = newString(buf, versionStart, versionEnd - versionStart)
+        xmlDeclVersion = this.newString(buf, versionStart, versionEnd - versionStart)
 
         var lastParsedAttr = "version"
 
@@ -2180,7 +2172,7 @@ class XmlPullParserKmp : XmlPullParser {
             }
             val encodingEnd = pos - 1
 
-            inputEncoding = newString(buf, encodingStart, encodingEnd - encodingStart)
+            inputEncoding = this.newString(buf, encodingStart, encodingEnd - encodingStart)
 
             lastParsedAttr = "encoding"
 
@@ -2342,7 +2334,7 @@ class XmlPullParserKmp : XmlPullParser {
         parseEntityRef()
         if (resolvedEntityRefCharBuf.contentEquals(BUF_NOT_RESOLVED)) {
             if (entityRefName == null) {
-                entityRefName = newString(buf, posStart, posEnd - posStart)
+                entityRefName = this.newString(buf, posStart, posEnd - posStart)
             }
             throw XmlPullParserException(
                 "could not resolve entity named '" + printable(entityRefName) + "'", this, null
